@@ -20,9 +20,13 @@ exports.updatePost = factory.updateOne(Post);
 
 // a user can delete his posts//
 exports.restrict = catchAsync(async (req, res, next) => {
-  if (req.user.role === 'admin' || req.body.userId === req.user.id)
-    return next();
-  else return next(new AppError('Sorry you cannot delete the post', 403));
+  if (req.user.role === 'admin') return next();
+
+  const post = await Post.findById(req.params.id);
+
+  if (post.User == req.user.id) return next();
+  else
+    return next(new AppError('Sorry you cannot access to this resource', 403));
 });
 exports.deletePost = factory.deleteOne(Post);
 

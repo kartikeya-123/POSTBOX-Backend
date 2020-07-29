@@ -13,16 +13,17 @@ const helmet = require('helmet');
 const cors = require('cors');
 
 // user route : /v1/users
-// post route : /v1/posts
-app.use(helmet());
-app.use(cookieParser());
-app.use(mongoSanitize());
+// // post route : /v1/posts
+// app.use(helmet());
+// app.use(mongoSanitize());
 app.use(express.json());
 app.use(xss());
 if (process.env.NODE_ENV === 'development') {
   // console.log('in development');
   app.use(morgan('dev'));
 }
+console.log(process.env.NODE_ENV);
+app.use(cookieParser());
 // if (process.env.NODE_ENV === 'production') {
 //   // console.log('in production mode');
 // }
@@ -36,10 +37,11 @@ if (process.env.NODE_ENV === 'development') {
 // });
 app.use(
   cors({
-    origin: 'http://127.0.0.1:3000',
+    origin: 'http://localhost:3000',
     credentials: true,
   })
 );
+
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/posts', postRouter);
 

@@ -37,6 +37,9 @@ exports.createOne = (Model) =>
 
     if (Model === Post) {
       // console.log(req.user.name);
+      // const user = req.user;
+      // user.posts.push(newdoc._id);
+      // await user.save({ runValidators: false });
       newdoc.User = req.user.id;
       newdoc.author = req.user.name;
       await newdoc.save({ runValidators: false });

@@ -21,25 +21,26 @@ router.patch(
   authController.protect,
   postController.downvotePost
 );
+router.patch(
+  '/edit/:id',
+  authController.protect,
+  postController.restrict,
+  postController.updatePost
+);
 router.get(
   '/my-posts',
   authController.protect,
   postController.getUser,
   postController.getAllPosts
 );
-router
-  .route('/:id')
-  .get(postController.checkBlacklist, postController.getPost)
-  .patch(
-    authController.protect,
-    authController.restrictTo('admin'),
-    factory.checkBlacklist,
-    postController.updatePost
-  )
-  .post(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    postController.restrict,
-    postController.deletePost
-  );
+router.route('/:id').get(postController.checkBlacklist, postController.getPost);
+
+router.delete(
+  '/delete/:id',
+  authController.protect,
+  // authController.restrictTo('admin'),
+  postController.restrict,
+  postController.deletePost
+);
+
 module.exports = router;

@@ -12,8 +12,8 @@ module.exports = class Email {
   newTransport() {
     //using sedngrid
     // console.log(process.env.NODE_ENV);
-    if (process.env.NODE_ENV === 'production') {
-      // console.log('in production');
+    if (process.env.NODE_ENV !== 'development') {
+      console.log('in production mode');
       return nodemailer.createTransport({
         service: 'SendGrid',
         auth: {

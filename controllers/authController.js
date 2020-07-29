@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const Email = require('../utils/email');
 const bcrypt = require('bcryptjs');
 const Token = require('./../models/tokenModel.js');
-const { RSA_NO_PADDING, ESRCH } = require('constants');
 // preparing a token
 const createToken = (id) => {
   const jwtToken = jwt.sign({ id }, process.env.JWT_SECRET_KEY, {
@@ -36,7 +35,7 @@ const createSendToken = (user, statusCode, res) => {
     httpOnly: true,
   };
 
-  if (process.env.NODE_ENV === 'Production') {
+  if (process.env.NODE_ENV === 'production') {
     cookieOptions.secure = true;
   }
 
@@ -144,16 +143,18 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   // console.log(req.cookies.jwt);
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
+  // if (
+  //   req.headers.authorization &&
+  //   req.headers.authorization.startsWith('Bearer')
+  // ) {
+  //   token = req.headers.authorization.split(' ')[1];
+  // } else
+  if (req.cookies.jwt) {
     // console.log(req.cookies.jwt);
     token = req.cookies.jwt;
   }
-
+  // console.log(req.cookies.jwt);
+  // console.log(token);
   if (!token) {
     return next(
       new AppError('You are not logged in! Please log in to get access.', 401)
