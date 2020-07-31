@@ -42,6 +42,7 @@ const createSendToken = (user, statusCode, res) => {
   res.cookie('jwt', token, cookieOptions);
   res.status(statusCode).json({
     status: 'success',
+    verification: true,
     token,
   });
 };
@@ -68,11 +69,14 @@ exports.signupVerification = catchAsync(async (req, res, next) => {
   }
 
   // sending a jwt
-  createSendToken(user, 201, res);
 
   user.signupToken = undefined;
   user.signupTokenExpiresAt = undefined;
+  user.verifiedEmail = true;
   await user.save({ validateBeforeSave: false });
+
+  createSendToken(user, 201, res);
+
   // next();
 });
 
@@ -134,9 +138,13 @@ exports.login = catchAsync(async (req, res, next) => {
       new AppError('sorry you have been blacklisted by the admin', 400)
     );
   }
+  if (!user.verifiedEmail) {
+    res.status(200).json({
+      verification: false,
+    });
+  } else createSendToken(user, 200, res);
 
   //step 4 generate token
-  createSendToken(user, 200, res);
 });
 
 //getting access to resources//
